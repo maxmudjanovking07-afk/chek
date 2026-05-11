@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savdo Kalkulyatori va Chek</title>
+    <meta name="description" content="Kalkulyator va chek chiqarish uchun qulay veb-ilova. Mahsulotlarni kiritib, foydani hisoblang va chekni chop eting.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <h2>Tizimga kirish</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">Ilovadan foydalanish uchun parolni kiriting</p>
+            <form id="login-form">
+                <div class="form-group" style="margin-bottom: 1rem; text-align: left;">
+                    <label for="username-input" style="color: var(--text-primary); margin-bottom: 0.5rem; display: block; font-size: 0.9rem;">Foydalanuvchi</label>
+                    <select id="username-input" style="width: 100%; padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 1rem; outline: none; cursor: pointer;">
+                        <option value="admin" style="background: #1e293b; color: white;">Admin</option>
+                        <option value="kassir1" style="background: #1e293b; color: white;">Kassir 1</option>
+                        <option value="kassir2" style="background: #1e293b; color: white;">Kassir 2</option>
+                        <option value="kassir3" style="background: #1e293b; color: white;">Kassir 3</option>
+                        <option value="kassir4" style="background: #1e293b; color: white;">Kassir 4</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <input type="password" id="password-input" placeholder="Parol" required>
+                </div>
+                <button type="submit" class="btn-primary">Kirish</button>
+                <p id="login-error" class="login-error" style="display: none; color: var(--danger-color); margin-top: 1rem; font-size: 0.9rem; text-align: center;">Noto'g'ri parol yoki foydalanuvchi!</p>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-container" id="app-container" style="display: none;">
+        <header>
+            <h1>Savdo Kalkulyatori</h1>
+            <p>Mahsulotlarni qo'shing, daromadni hisoblang va chek chiqaring</p>
+        </header>
+
+        <main class="main-content">
+            <section class="input-section no-print">
+                <form id="product-form">
+                    <div class="form-group">
+                        <label for="product-name">Mahsulot nomi</label>
+                        <input type="text" id="product-name" required placeholder="Masalan: Olma">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-qty">Dona</label>
+                        <input type="number" id="product-qty" required min="1" step="any" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="sell-price">Sotuv narxi (so'm)</label>
+                        <input type="number" id="sell-price" required min="0" placeholder="0">
+                    </div>
+                    <button type="submit" class="btn-primary">Qo'shish</button>
+                </form>
+            </section>
+
+            <section class="receipt-section" id="receipt">
+                <div class="receipt-header">
+                    <h2>ARTFLOOR DO'KONI</h2>
+                    <p style="margin: 0.25rem 0; color: #64748b; font-weight: 500;">Xarid cheki</p>
+                    <p class="date" id="receipt-date"></p>
+                </div>
+                
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>Nomi</th>
+                            <th>Dona</th>
+                            <th>Narxi</th>
+                            <th>Summa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt-body">
+                        <!-- Items will be added here via JS -->
+                        <tr class="empty-state">
+                            <td colspan="4" style="text-align: center; color: #999;">Hali mahsulot qo'shilmadi</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="receipt-summary">
+                    <div class="summary-row">
+                        <span>Jami summa:</span>
+                        <span id="total-sell">0 so'm</span>
+                    </div>
+                </div>
+
+                <div class="receipt-contacts" style="margin-top: 1.5rem; text-align: center; border-top: 2px dashed #cbd5e1; padding-top: 1rem; font-size: 0.95rem; line-height: 1.6;">
+                    <p style="font-weight: 600; color: #0f172a; margin-bottom: 0.2rem;">Murojaat uchun:</p>
+                    <p>+998 93 492 88 88</p>
+                    <p>+998 93 191 74 47</p>
+                    <p>+998 93 729 56 59</p>
+                    <p style="margin-top: 0.5rem; font-style: italic; color: #64748b; font-size: 0.9rem;">Xaridingiz uchun rahmat!</p>
+                </div>
+
+                <div class="receipt-footer no-print">
+                    <button id="print-btn" class="btn-secondary">Chekni chiqarish (Print)</button>
+                    <button id="clear-btn" class="btn-danger">Tozalash</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

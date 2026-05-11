@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savdo Kalkulyatori va Chek</title>
+    <meta name="description" content="Kalkulyator va chek chiqarish uchun qulay veb-ilova. Mahsulotlarni kiritib, foydani hisoblang va chekni chop eting.">
+    <style>
+:root {
+    --bg-color: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-color: #3b82f6;
+    --accent-hover: #2563eb;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.app-container {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.login-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--glass-shadow);
+    text-align: center;
+}
+
+.login-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header {
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Form Styles */
+.input-section {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease;
+}
+
+.input-section:hover {
+    transform: translateY(-2px);
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+button {
+    width: 100%;
+    padding: 0.875rem;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--accent-color);
+    color: white;
+    margin-top: 1rem;
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.23);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #1e293b; /* For receipt background */
+    border: 1px solid #cbd5e1;
+}
+
+.btn-secondary:hover {
+    background: #f1f5f9;
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--danger-color);
+    border: 1px solid #fca5a5;
+    margin-top: 0.5rem;
+}
+
+.btn-danger:hover {
+    background: #fef2f2;
+}
+
+/* Receipt Styles */
+.receipt-section {
+    background: #ffffff;
+    color: #0f172a;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px dashed #cbd5e1;
+    padding-bottom: 1rem;
+}
+
+.receipt-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    letter-spacing: 1px;
+}
+
+.date {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.receipt-table th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 2px solid #cbd5e1;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.receipt-table td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Align columns and add vertical stripes (uzun palasa) */
+.receipt-table th:nth-child(1),
+.receipt-table td:nth-child(1) {
+    text-align: left;
+}
+
+.receipt-table th:nth-child(2),
+.receipt-table td:nth-child(2) {
+    text-align: center;
+    border-left: 1px dashed #cbd5e1;
+}
+
+.receipt-table th:nth-child(3),
+.receipt-table td:nth-child(3) {
+    text-align: right;
+    border-left: 2px solid #64748b; /* Narxi yoniga uzun palasa */
+}
+
+.receipt-table th:nth-child(4),
+.receipt-table td:nth-child(4) {
+    text-align: right;
+    border-left: 2px solid #64748b; /* Summa yoniga uzun palasa */
+}
+
+.receipt-summary {
+    margin-top: auto;
+    border-top: 2px dashed #cbd5e1;
+    padding-top: 1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.profit-row {
+    color: #16a34a;
+    font-size: 1rem;
+}
+
+.receipt-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: none;
+        padding: 0;
+        align-items: flex-start;
+        display: block;
+    }
+    
+    .app-container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        background: none;
+        max-width: 100%;
+        display: block;
+    }
+    
+    .no-print, header {
+        display: none !important;
+    }
+
+    .main-content {
+        display: block;
+    }
+
+    .receipt-section {
+        box-shadow: none;
+        padding: 0;
+        width: 100%;
+        max-width: 320px; /* Typical thermal printer width */
+        margin: 0;
+        color: #000;
+        border-radius: 0;
+    }
+
+    .receipt-header {
+        border-bottom: 1px dashed #000;
+    }
+
+    .receipt-summary {
+        border-top: 1px dashed #000;
+    }
+
+    .receipt-table th {
+        color: #000;
+        border-bottom: 1px solid #000;
+    }
+}
+
+</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <h2>Tizimga kirish</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">Ilovadan foydalanish uchun parolni kiriting</p>
+            <form id="login-form">
+                <div class="form-group" style="margin-bottom: 1rem; text-align: left;">
+                    <label for="username-input" style="color: var(--text-primary); margin-bottom: 0.5rem; display: block; font-size: 0.9rem;">Foydalanuvchi</label>
+                    <select id="username-input" style="width: 100%; padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 1rem; outline: none; cursor: pointer;">
+                        <option value="admin" style="background: #1e293b; color: white;">Admin</option>
+                        <option value="kassir1" style="background: #1e293b; color: white;">Kassir 1</option>
+                        <option value="kassir2" style="background: #1e293b; color: white;">Kassir 2</option>
+                        <option value="kassir3" style="background: #1e293b; color: white;">Kassir 3</option>
+                        <option value="kassir4" style="background: #1e293b; color: white;">Kassir 4</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <input type="password" id="password-input" placeholder="Parol" required>
+                </div>
+                <button type="submit" class="btn-primary">Kirish</button>
+                <p id="login-error" class="login-error" style="display: none; color: var(--danger-color); margin-top: 1rem; font-size: 0.9rem; text-align: center;">Noto'g'ri parol yoki foydalanuvchi!</p>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-container" id="app-container" style="display: none;">
+        <header>
+            <h1>Savdo Kalkulyatori</h1>
+            <p>Mahsulotlarni qo'shing, daromadni hisoblang va chek chiqaring</p>
+        </header>
+
+        <main class="main-content">
+            <section class="input-section no-print">
+                <form id="product-form">
+                    <div class="form-group">
+                        <label for="product-name">Mahsulot nomi</label>
+                        <input type="text" id="product-name" required placeholder="Masalan: Olma">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-qty">Dona</label>
+                        <input type="number" id="product-qty" required min="1" step="any" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="sell-price">Sotuv narxi (so'm)</label>
+                        <input type="number" id="sell-price" required min="0" placeholder="0">
+                    </div>
+                    <button type="submit" class="btn-primary">Qo'shish</button>
+                </form>
+            </section>
+
+            <section class="receipt-section" id="receipt">
+                <div class="receipt-header">
+                    <h2>ARTFLOOR DO'KONI</h2>
+                    <p style="margin: 0.25rem 0; color: #64748b; font-weight: 500;">Xarid cheki</p>
+                    <p class="date" id="receipt-date"></p>
+                </div>
+                
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>Nomi</th>
+                            <th>Dona</th>
+                            <th>Narxi</th>
+                            <th>Summa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt-body">
+                        <!-- Items will be added here via JS -->
+                        <tr class="empty-state">
+                            <td colspan="4" style="text-align: center; color: #999;">Hali mahsulot qo'shilmadi</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="receipt-summary">
+                    <div class="summary-row">
+                        <span>Jami summa:</span>
+                        <span id="total-sell">0 so'm</span>
+                    </div>
+                </div>
+
+                <div class="receipt-contacts" style="margin-top: 1.5rem; text-align: center; border-top: 2px dashed #cbd5e1; padding-top: 1rem; font-size: 0.95rem; line-height: 1.6;">
+                    <p style="font-weight: 600; color: #0f172a; margin-bottom: 0.2rem;">Murojaat uchun:</p>
+                    <p>+998 93 492 88 88</p>
+                    <p>+998 93 191 74 47</p>
+                    <p>+998 93 729 56 59</p>
+                    <p style="margin-top: 0.5rem; font-style: italic; color: #64748b; font-size: 0.9rem;">Xaridingiz uchun rahmat!</p>
+                </div>
+
+                <div class="receipt-footer no-print">
+                    <button id="print-btn" class="btn-secondary">Chekni chiqarish (Print)</button>
+                    <button id="clear-btn" class="btn-danger">Tozalash</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Login form elements
+    const loginForm = document.getElementById('login-form');
+    const usernameInput = document.getElementById('username-input');
+    const passwordInput = document.getElementById('password-input');
+    const loginError = document.getElementById('login-error');
+    const loginOverlay = document.getElementById('login-overlay');
+    const appContainer = document.getElementById('app-container');
+
+    // Foydalanuvchilar va ularning parollari (5 kishilik)
+    const users = {
+        'admin': '1234',
+        'kassir1': '123456',
+        'kassir2': '123456',
+        'kassir3': '123456',
+        'kassir4': '123456'
+    };
+
+    // Handle login
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = usernameInput.value;
+        const password = passwordInput.value.trim();
+        
+        if (users[username] && users[username] === password) {
+            // Password is correct
+            loginOverlay.style.display = 'none';
+            appContainer.style.display = 'flex';
+        } else {
+            // Incorrect password
+            loginError.style.display = 'block';
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    });
+
+    const form = document.getElementById('product-form');
+    const receiptBody = document.getElementById('receipt-body');
+    const totalSellEl = document.getElementById('total-sell');
+    const receiptDateEl = document.getElementById('receipt-date');
+    const printBtn = document.getElementById('print-btn');
+    const clearBtn = document.getElementById('clear-btn');
+
+    let products = [];
+
+    // Sana va vaqtni o'rnatish
+    const updateDate = () => {
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        receiptDateEl.textContent = `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+    };
+    updateDate();
+    setInterval(updateDate, 60000);
+
+    // Pulni formatlash (10000 -> 10 000 so'm)
+    const formatMoney = (amount) => {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
+    };
+
+    const updateReceipt = () => {
+        try {
+            receiptBody.innerHTML = '';
+            let totalSell = 0;
+
+            if (products.length === 0) {
+                receiptBody.innerHTML = `
+                    <tr class="empty-state">
+                        <td colspan="4" style="text-align: center; color: #999;">Hali mahsulot qo'shilmadi</td>
+                    </tr>
+                `;
+                totalSellEl.textContent = "0 so'm";
+                return;
+            }
+
+            products.forEach((product) => {
+                const tr = document.createElement('tr');
+                
+                const nameTd = document.createElement('td');
+                nameTd.textContent = product.name;
+                
+                const qtyTd = document.createElement('td');
+                qtyTd.textContent = product.qty;
+                
+                const priceTd = document.createElement('td');
+                priceTd.textContent = formatMoney(product.sellPrice);
+                
+                const sumTd = document.createElement('td');
+                sumTd.textContent = formatMoney(product.sellPrice * product.qty);
+
+                tr.appendChild(nameTd);
+                tr.appendChild(qtyTd);
+                tr.appendChild(priceTd);
+                tr.appendChild(sumTd);
+
+                receiptBody.appendChild(tr);
+
+                totalSell += product.sellPrice * product.qty;
+            });
+
+            totalSellEl.textContent = formatMoney(totalSell);
+        } catch (e) {
+            console.error("Chekni yangilashda xatolik:", e);
+        }
+    };
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        try {
+            const nameInput = document.getElementById('product-name').value;
+            const qtyInput = document.getElementById('product-qty').value;
+            const sellInput = document.getElementById('sell-price').value;
+
+            const name = nameInput.trim();
+            // Vergul bilan yozilgan bo'lsa, nuqtaga o'tkazamiz
+            const qtyStr = qtyInput.toString().replace(/,/g, '.');
+            const sellStr = sellInput.toString().replace(/,/g, '.');
+
+            const qty = parseFloat(qtyStr);
+            const sellPrice = parseFloat(sellStr);
+
+            if (name && !isNaN(qty) && qty > 0 && !isNaN(sellPrice) && sellPrice >= 0) {
+                products.push({ name, qty, sellPrice });
+                updateReceipt();
+                
+                // Formani tozalash
+                form.reset();
+                document.getElementById('product-qty').value = 1;
+                document.getElementById('product-name').focus();
+            } else {
+                alert("Iltimos, barcha maydonlarni to'g'ri to'ldiring! Miqdor yoki narxlarda xatolik bo'lishi mumkin.");
+            }
+        } catch (error) {
+            console.error("Qo'shishda xatolik:", error);
+            alert("Xatolik: " + error.message);
+        }
+    });
+
+    printBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (products.length === 0) {
+            alert("Chek chiqarish uchun avval mahsulot qo'shing!");
+            return;
+        }
+        window.print();
+    });
+
+    clearBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm("Barcha ma'lumotlarni tozalab tashlamoqchimisiz?")) {
+            products = [];
+            form.reset(); // Yozuv maydonlarini ham tozalaydi
+            document.getElementById('product-qty').value = 1;
+            updateReceipt();
+        }
+    });
+});
+
+</script>
+</body>
+</html>
+
